@@ -73,9 +73,9 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        print(successorGameState.getGhostStates()[0])
+        #print(successorGameState.getGhostStates()[0])
         print(1)
-        print(successorGameState.getGhostStates()[1])
+        #print(successorGameState.getGhostStates()[1])
         #print(newPos)#坐标（1，2）
         #print(successorGameState.getScore())#单纯数字
         #return successorGameState.getScore()
