@@ -79,7 +79,16 @@ class ReflexAgent(Agent):
         #print(newPos)#坐标（1，2）
         #print(successorGameState.getScore())#单纯数字
         #return successorGameState.getScore()
-        return 0
+        d=manhattanDistance(newPos,successorGameState.getGhostPositions()[0])
+        foodls=currentGameState.getFood().asList()
+        close=999
+        for i in foodls:
+            if close>manhattanDistance(newPos,i):
+                close=manhattanDistance(newPos,i)
+        if d<=3:
+            return 0
+        else:
+            return 1/(close+1)
 
 def scoreEvaluationFunction(currentGameState):
     """
