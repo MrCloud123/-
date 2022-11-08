@@ -161,10 +161,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
         return minimax(gameState, agentindex,self.depth)
     
         util.raiseNotDefined()
-    def minimax(gameState, agentindex,layer):
-        if gameState.isWin() or gameState.isLose() or layer>=4:
-            return action
-        actions=getLegalActions(agentindex)
+    def minimax(self,gameState, agentindex,layer):
+        if gameState.isWin() or gameState.isLose() or depth>self.depth:
+            return self.evaluationFunction(gameState)
+        actions=gameState.getLegalActions(agentindex)
         ls=[]
         for i in actions:
             successor=gameState.generateSuccessor(agentindex,i)
