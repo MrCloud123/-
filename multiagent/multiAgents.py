@@ -148,12 +148,34 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        #import time
+        import time
         #print(gameState.getLegalActions(0))"['West', 'Stop', 'East']"
-        #time.sleep(60)
-        return "West"
-        
+        #print(gameState.getNumAgents()):恒定数字：4
+        #print(gameState.generateSuccessor(1, 'East')):  %%%%%%%%%
+        #                                                %.<    G%
+        #                                                % %.%G%%%
+        #                                                % G   %%%        #                                               %%%%%%%%%
+        #                                                Score: 0
+        print(self.evaluationFunction(gameState))
+        time.sleep(10)
+        return minimax(gameState, agentindex,self.depth)
+    
         util.raiseNotDefined()
+    def minimax(gameState, agentindex,layer):
+        if gameState.isWin() or gameState.isLose() or layer>=4:
+            return action
+        actions=getLegalActions(agentindex)
+        ls=[]
+        for i in actions:
+            successor=gameState.generateSuccessor(agentindex,i)
+            score=self.evaluationFunction(successor)
+            ls.append(score)
+        if agentindex==0:
+            #agentindex=0说明是pacman
+            return min(ls)
+        else:
+            return max(ls)
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
