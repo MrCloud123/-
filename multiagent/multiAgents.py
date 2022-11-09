@@ -12,6 +12,7 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+from audioop import minmax
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -123,7 +124,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
     Your minimax agent (question 2)
     """
-
+    
     def getAction(self, gameState):
         """
         Returns the minimax action from the current gameState using self.depth
@@ -148,7 +149,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        import time
+        
         #print(gameState.getLegalActions(0))"['West', 'Stop', 'East']"
         #print(gameState.getNumAgents()):恒定数字：4
         #print(gameState.generateSuccessor(1, 'East')):  %%%%%%%%%
@@ -156,25 +157,46 @@ class MinimaxAgent(MultiAgentSearchAgent):
         #                                                % %.%G%%%
         #                                                % G   %%%        #                                               %%%%%%%%%
         #                                                Score: 0
-        print(self.evaluationFunction(gameState))
-        time.sleep(10)
-        return minimax(gameState, agentindex,self.depth)
+        #print(self.evaluationFunction(gameState))
+        k=self.minimax(gameState,0,1)
+        print(k)
+        print(gameState)
+        return k
     
-        util.raiseNotDefined()
-    def minimax(gameState, agentindex,layer):
-        if gameState.isWin() or gameState.isLose() or layer>=4:
-            return action
-        actions=getLegalActions(agentindex)
+    def minimax(self,state,index,layer):
+        if (state.isWin() or state.isLose() or layer>4):
+            #import time
+            #time.sleep(1)
+            return self.evaluationFunction(state)
+                
+        actions=state.getLegalActions(index)
+        if Directions.STOP in actions:
+            actions.remove(Directions.STOP)
         ls=[]
         for i in actions:
-            successor=gameState.generateSuccessor(agentindex,i)
-            score=self.evaluationFunction(successor)
-            ls.append(score)
-        if agentindex==0:
+            successor=state.generateSuccessor(index,i)
+            if (index==state.getNumAgents()-1):
             #agentindex=0说明是pacman
-            return min(ls)
+                ls.append(self.minimax(successor,0,layer+1))
+            else:
+                ls.append(self.minimax(successor,index+1,layer))
+        if index==0:
+            if(layer==1):
+                for i in range(len(ls)):
+                    if (ls[i]==max(ls)):
+                        print(state)
+                        print(actions[i])
+                        return actions[i]
+            else:
+                return max(ls)
         else:
-            return max(ls)
+                return min(ls)
+    
+        
+    
+        
+
+    
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
