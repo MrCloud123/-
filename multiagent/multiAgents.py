@@ -156,15 +156,12 @@ class MinimaxAgent(MultiAgentSearchAgent):
             #import time
             #time.sleep(1)
             return self.evaluationFunction(state)
-                
         actions=state.getLegalActions(index)
-        if Directions.STOP in actions:
-            actions.remove(Directions.STOP)
         ls=[]
         for i in actions:
             successor=state.generateSuccessor(index,i)
             if (index==state.getNumAgents()-1):
-            #agentindex=0说明是pacman
+            #index=0说明是pacman
                 ls.append(self.minimax(successor,0,layer+1))
             else:
                 ls.append(self.minimax(successor,index+1,layer))
@@ -172,13 +169,11 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if(layer==1):
                 for i in range(len(ls)):
                     if (ls[i]==max(ls)):
-                        print(state)
-                        print(actions[i])
                         return actions[i]
             else:
                 return max(ls)
         else:
-                return min(ls)
+            return min(ls)
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -191,6 +186,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+
         util.raiseNotDefined()
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
