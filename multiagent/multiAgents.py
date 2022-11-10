@@ -151,7 +151,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         k=self.minimax(gameState,0,1)
         return k
     
-    def minimax(self,state,index,layer):
+    def minimax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
         if (state.isWin() or state.isLose() or layer>self.depth):
             #import time
             #time.sleep(1)
@@ -160,11 +160,13 @@ class MinimaxAgent(MultiAgentSearchAgent):
         ls=[]
         for i in actions:
             successor=state.generateSuccessor(index,i)
-            if (index==state.getNumAgents()-1):
+            if (index==state.getNumAgents()-1):#说明是pacman
             #index=0说明是pacman
-                ls.append(self.minimax(successor,0,layer+1))
-            else:
-                ls.append(self.minimax(successor,index+1,layer))
+                k=self.minimax(successor,0,layer+1,alpha,beta)
+                if k==1
+                ls.append(self.minimax(successor,0,layer+1,alpha,beta))
+            else:#说明是鬼
+                ls.append(self.minimax(successor,index+1,layer,alpha,beta))
         if index==0:
             if(layer==1):
                 for i in range(len(ls)):
