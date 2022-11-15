@@ -150,8 +150,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         k=self.minimax(gameState,0,1)
         return k
-    
-    def minimax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
+    def minimax(self,state,index,layer):
         if (state.isWin() or state.isLose() or layer>self.depth):
             #import time
             #time.sleep(1)
@@ -160,13 +159,11 @@ class MinimaxAgent(MultiAgentSearchAgent):
         ls=[]
         for i in actions:
             successor=state.generateSuccessor(index,i)
-            if (index==state.getNumAgents()-1):#说明是pacman
+            if (index==state.getNumAgents()-1):
             #index=0说明是pacman
-                k=self.minimax(successor,0,layer+1,alpha,beta)
-                if k==1
-                ls.append(self.minimax(successor,0,layer+1,alpha,beta))
-            else:#说明是鬼
-                ls.append(self.minimax(successor,index+1,layer,alpha,beta))
+                ls.append(self.minimax(successor,0,layer+1))
+            else:
+                ls.append(self.minimax(successor,index+1,layer))
         if index==0:
             if(layer==1):
                 for i in range(len(ls)):
@@ -188,9 +185,35 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-
+        k=self.minimax(gameState,0,1)
+        return k
         util.raiseNotDefined()
 
+    def minimax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
+        if (state.isWin() or state.isLose() or layer>self.depth):
+            #import time
+            #time.sleep(1)
+            return self.evaluationFunction(state)
+        actions=state.getLegalActions(index)
+        ls=[]
+        for i in actions:
+            successor=state.generateSuccessor(index,i)
+            if (index==state.getNumAgents()-1):#说明是pacman
+            #index=0说明是pacman
+                k=self.minimax(successor,0,layer+1,alpha,beta)
+                if k==1:
+                    ls.append(self.minimax(successor,0,layer+1,alpha,beta))
+            else:#说明是鬼
+                ls.append(self.minimax(successor,index+1,layer,alpha,beta))
+        if index==0:
+            if(layer==1):
+                for i in range(len(ls)):
+                    if (ls[i]==max(ls)):
+                        return actions[i]
+            else:
+                return max(ls)
+        else:
+            return min(ls)
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
