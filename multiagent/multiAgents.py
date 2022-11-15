@@ -185,35 +185,46 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        k=self.minimax(gameState,0,1)
+        k=self.AlphaBetaminimax(gameState,0,1)[1]
+        print(k)
         return k
 
-    def minimax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
+    def AlphaBetaminimax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
         if (state.isWin() or state.isLose() or layer>self.depth):
             #import time
             #time.sleep(1)
-            return self.evaluationFunction(state)
+            return self.evaluationFunction(state),"Stop"
         actions=state.getLegalActions(index)
-        ls=[]
+        minval=float("inf")
+        maxval=-float("inf")
+        bestaction=None
         for i in actions:
             successor=state.generateSuccessor(index,i)
             if (index==state.getNumAgents()-1):#说明是pacman
             #index=0说明是pacman
-                k=self.minimax(successor,0,layer+1,alpha,beta)
-                if k==1:
-                    ls.append(self.minimax(successor,0,layer+1,alpha,beta))
+                v=self.AlphaBetaminimax(successor,0,layer+1,alpha,beta)[0]
+
             else:#说明是鬼
-                ls.append(self.minimax(successor,index+1,layer,alpha,beta))
-        #深度优先搜索，只能比较之前的和目前的分支
-        if index==0:
-            if(layer==1):
-                for i in range(len(ls)):
-                    if (ls[i]==max(ls)):
-                        return actions[i]
+                v=self.AlphaBetaminimax(successor,index+1,layer,alpha,beta)[0]
+            if layer%2==1:
+                if v<minval:
+                    minval=v
+                    bestaction=i
+                if v<alpha:
+                    return v,i
+                beta=v if v<beta else beta
             else:
-                return max(ls)
+                if v>maxval:
+                    maxval=v
+                    bestaction=i
+                if v>beta:
+                    return v,i
+                alpha=v if v>alpha else alpha
+        if index==0:
+            return maxval,bestaction
         else:
-            return min(ls)
+            return minval,bestaction
+        #深度优先搜索，只能比较之前的和目前的分支
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
