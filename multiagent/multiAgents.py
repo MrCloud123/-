@@ -187,7 +187,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         k=self.minimax(gameState,0,1)
         return k
-        util.raiseNotDefined()
 
     def minimax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
         if (state.isWin() or state.isLose() or layer>self.depth):
@@ -205,6 +204,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                     ls.append(self.minimax(successor,0,layer+1,alpha,beta))
             else:#说明是鬼
                 ls.append(self.minimax(successor,index+1,layer,alpha,beta))
+        #深度优先搜索，只能比较之前的和目前的分支
         if index==0:
             if(layer==1):
                 for i in range(len(ls)):
