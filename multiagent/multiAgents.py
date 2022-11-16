@@ -303,7 +303,7 @@ def betterEvaluationFunction(currentGameState):
             return -float("INF")
         elif d<3:
             return score
-        return 1/(close+1)+score
+        return 1/(close+1)+score+random.random()*0.01
     else:
         return 1/d+score
     util.raiseNotDefined()
