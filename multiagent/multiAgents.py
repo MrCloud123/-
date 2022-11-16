@@ -27,8 +27,6 @@ class ReflexAgent(Agent):
     it in any way you see fit, so long as you don't touch our method
     headers.
     """
-
-
     def getAction(self, gameState):
         """
         You do not need to change this method, but you're welcome to.
@@ -86,6 +84,8 @@ class ReflexAgent(Agent):
                 close=manhattanDistance(newPos,i)
         if d<=3:
             return 0
+        elif close==0:
+            return 100+random.random()*0.1
         else:
             return 1/(close+1)
 
@@ -240,48 +240,41 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        k=self.AlphaBetamax(gameState)[1]
-        #print(k)
+        k=self.getmax(gameState)[1]
         return k
 
-    def AlphaBetamax(self,state,layer=0,index=0,alpha=-float("inf"),beta=float("inf")):
+    def getmax(self,state,layer=0,index=0):
         actions=state.getLegalActions(index)
         actions=[i for i in actions if i!= "Stop"]
         if layer==self.depth or len(actions)==0:
-            return self.evaluationFunction(state),"None"
+            return self.evaluationFunction(state),"Stop"
         maxval=-float("inf")
-        bestaction=None
+        bestaction="Stop"
         for i in actions:
             successor=state.generateSuccessor(index,i)
-            v=self.AlphaBetaexp(successor,layer,index+1,alpha,beta)[0]
+            v=self.getexp(successor,layer,index+1)[0]
             if v>maxval:
                 maxval=v
-                bestaction=i
-            if v>beta:
-                return v,i
-            alpha=v if v>alpha else alpha               
+                bestaction=i           
         return maxval,bestaction
 
-    def AlphaBetaexp(self,state,layer=0,index=1,alpha=-float("inf"),beta=float("inf")):
+    def getexp(self,state,layer=0,index=1):
         actions=state.getLegalActions(index)
+        actions=[i for i in actions if i!= "Stop"]
+        #print(actions)
         if layer==self.depth or len(actions)==0:
-            return self.evaluationFunction(state),"None"
-        minval=float("inf")
-        bestaction=None
+            return self.evaluationFunction(state),"Stop"
+        bestaction="Stop"
+        total=0
         for i in actions:
             successor=state.generateSuccessor(index,i)
             if (index==state.getNumAgents()-1):#说明是pacman
             #index=0说明是pacman
-                v=self.AlphaBetamax(successor,layer+1,0,alpha,beta)[0]
+                v=self.getmax(successor,layer+1,0)[0]
             else:#说明是鬼
-                v=self.AlphaBetaexp(successor,layer,index+1,alpha,beta)[0]
-            if v<minval:
-                minval=v
-                bestaction=i
-            if v<alpha:   
-                return v,i
-            beta=v if v<beta else beta
-        return minval,bestaction
+                v=self.getexp(successor,layer,index+1)[0]
+            total+=v
+        return total/len(actions),bestaction
 
 def betterEvaluationFunction(currentGameState):
     """
@@ -291,6 +284,28 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
+    score=currentGameState.getScore()
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+    "*** YOUR CODE HERE ***"
+    d=manhattanDistance(newPos,currentGameState.getGhostPositions()[0])
+    scaredTime=currentGameState.getGhostStates()[0].scaredTimer
+    foodls=newFood.asList()
+    close=999
+    for i in foodls:
+        if close>=manhattanDistance(newPos,i):
+            close=manhattanDistance(newPos,i)
+    if scaredTime<2:
+        if d==0:
+            return -float("INF")
+        elif d<3:
+            return score
+        return 1/(close+1)+score
+    else:
+        return 1/d+score
     util.raiseNotDefined()
 
 # Abbreviation
