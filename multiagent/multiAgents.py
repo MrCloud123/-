@@ -185,80 +185,53 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        k=self.AlphaBetaminimax(gameState,0,1)[1]
+        k=self.AlphaBetamax(gameState)[1]
         #print(k)
         return k
 
-    def AlphaBetamax(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
-        if layer==self.depth:
-            return self.evaluationFunction(state),"None"
+    def AlphaBetamax(self,state,layer=0,index=0,alpha=-float("inf"),beta=float("inf")):
         actions=state.getLegalActions(index)
-        minval=float("inf")
+        actions=[i for i in actions if i!= "Stop"]
+        if layer==self.depth or len(actions)==0:
+            return self.evaluationFunction(state),"None"
         maxval=-float("inf")
+        bestaction=None
+        for i in actions:
+            successor=state.generateSuccessor(index,i)
+            v=self.AlphaBetamin(successor,layer,index+1,alpha,beta)[0]
+            if v>maxval:
+                maxval=v
+                bestaction=i
+            if v>beta:
+                return v,i
+            alpha=v if v>alpha else alpha               
+        return maxval,bestaction
+
+    def AlphaBetamin(self,state,layer=0,index=1,alpha=-float("inf"),beta=float("inf")):
+        actions=state.getLegalActions(index)
+        if layer==self.depth or len(actions)==0:
+            return self.evaluationFunction(state),"None"
+        minval=float("inf")
         bestaction=None
         for i in actions:
             successor=state.generateSuccessor(index,i)
             if (index==state.getNumAgents()-1):#说明是pacman
             #index=0说明是pacman
-                v=self.AlphaBetaminimax(successor,0,layer+1,alpha,beta)[0]
-                if v<minval:
-                    minval=v
-                    bestaction=i
-                if v<alpha:
-                    return v,i
-                beta=v if v<beta else beta
-                
+                v=self.AlphaBetamax(successor,layer+1,0,alpha,beta)[0]
             else:#说明是鬼
-                v=self.AlphaBetaminimax(successor,index+1,layer,alpha,beta)[0]
-                if v>maxval:
-                    maxval=v
-                    bestaction=i
-                if v>beta:
-                    
-                    return v,i
-                alpha=v if v>alpha else alpha
-        if index==state.getNumAgents()-1:
-            return maxval,bestaction
-        else:
-            return minval,bestaction
-    def AlphaBetamin(self,state,index,layer,alpha=-float("inf"),beta=float("inf")):
-        if layer==self.depth:
-            return self.evaluationFunction(state),"None"
-        actions=state.getLegalActions(index)
-        minval=float("inf")
-        maxval=-float("inf")
-        bestaction=None
-        for i in actions:
-            successor=state.generateSuccessor(index,i)
-            if (index==state.getNumAgents()-1):#说明是pacman
-            #index=0说明是pacman
-                v=self.AlphaBetaminimax(successor,0,layer+1,alpha,beta)[0]
-                if v<minval:
-                    minval=v
-                    bestaction=i
-                if v<alpha:
-                    return v,i
-                beta=v if v<beta else beta
-                
-            else:#说明是鬼
-                v=self.AlphaBetaminimax(successor,index+1,layer,alpha,beta)[0]
-                if v>maxval:
-                    maxval=v
-                    bestaction=i
-                if v>beta:
-                    
-                    return v,i
-                alpha=v if v>alpha else alpha
-        if index==state.getNumAgents()-1:
-            return maxval,bestaction
-        else:
-            return minval,bestaction
+                v=self.AlphaBetamin(successor,layer,index+1,alpha,beta)[0]
+            if v<minval:
+                minval=v
+                bestaction=i
+            if v<alpha:   
+                return v,i
+            beta=v if v<beta else beta
+        return minval,bestaction
         #深度优先搜索，只能比较之前的和目前的分支
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
     """
-
     def getAction(self, gameState):
         """
         Returns the expectimax action using self.depth and self.evaluationFunction
@@ -267,7 +240,48 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        k=self.AlphaBetamax(gameState)[1]
+        #print(k)
+        return k
+
+    def AlphaBetamax(self,state,layer=0,index=0,alpha=-float("inf"),beta=float("inf")):
+        actions=state.getLegalActions(index)
+        actions=[i for i in actions if i!= "Stop"]
+        if layer==self.depth or len(actions)==0:
+            return self.evaluationFunction(state),"None"
+        maxval=-float("inf")
+        bestaction=None
+        for i in actions:
+            successor=state.generateSuccessor(index,i)
+            v=self.AlphaBetaexp(successor,layer,index+1,alpha,beta)[0]
+            if v>maxval:
+                maxval=v
+                bestaction=i
+            if v>beta:
+                return v,i
+            alpha=v if v>alpha else alpha               
+        return maxval,bestaction
+
+    def AlphaBetaexp(self,state,layer=0,index=1,alpha=-float("inf"),beta=float("inf")):
+        actions=state.getLegalActions(index)
+        if layer==self.depth or len(actions)==0:
+            return self.evaluationFunction(state),"None"
+        minval=float("inf")
+        bestaction=None
+        for i in actions:
+            successor=state.generateSuccessor(index,i)
+            if (index==state.getNumAgents()-1):#说明是pacman
+            #index=0说明是pacman
+                v=self.AlphaBetamax(successor,layer+1,0,alpha,beta)[0]
+            else:#说明是鬼
+                v=self.AlphaBetaexp(successor,layer,index+1,alpha,beta)[0]
+            if v<minval:
+                minval=v
+                bestaction=i
+            if v<alpha:   
+                return v,i
+            beta=v if v<beta else beta
+        return minval,bestaction
 
 def betterEvaluationFunction(currentGameState):
     """
