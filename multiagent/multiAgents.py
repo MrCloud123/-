@@ -281,7 +281,13 @@ def betterEvaluationFunction(currentGameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: The first step is to judge the scaredTime of the ghost. If the time is larger than 2, 
+                 #the pacman should try to get closer to the ghost and try to eat it. In the normal state, 
+                 #the pacman should find the closest food when the distance between pacman and ghost is larger than 3.
+                 #If the distance is smaller than 3, it means that the ghost is approaching, so the best strategy is 
+                 #running away.  In order to prevent the situation that the two point may have same score and the pacman
+                 #may wander between two point for a long time, I add a very small random number to let the pacman jump out
+                 #from the wandering. The adding of that random number is useful, The average score increases by about 10%.
     """
     "*** YOUR CODE HERE ***"
     score=currentGameState.getScore()
@@ -305,8 +311,7 @@ def betterEvaluationFunction(currentGameState):
             return score
         return 1/(close+1)+score+random.random()*0.01
     else:
-        return 1/d+score
-    util.raiseNotDefined()
+        return 1/d+score+random.random()*0.01
 
 # Abbreviation
 better = betterEvaluationFunction
