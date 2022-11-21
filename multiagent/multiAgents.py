@@ -85,7 +85,7 @@ class ReflexAgent(Agent):
         if d<=3:
             return 0
         elif close==0:
-            return 100+random.random()*0.1
+            return 100
         else:
             return 1/(close+1)
 
