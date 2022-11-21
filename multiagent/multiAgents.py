@@ -283,7 +283,7 @@ def betterEvaluationFunction(currentGameState):
 
     DESCRIPTION: The first step is to judge the scared time of the ghost. If the time is larger than 2, 
                  #the pacman should try to get closer to the ghost and try to eat it. In the normal state, 
-                 #the pacman should find the closest food when the distance between pacman and ghost is larger than 3.
+                 #the pacman should find the closest food when the distance between pacman and ghost is larger than 2.
                  #If the distance is smaller than 2, it means that the ghost is approaching, so the best strategy is 
                  #running away.  In order to prevent the situation that the two point may have same score and the pacman
                  #may wander between two points for a long time, I add a very small random number to let the pacman jump out
